@@ -14,6 +14,8 @@ The default ruleset is **Horizon**; a **Retail (CoP)** ruleset is also selectabl
 SCP also tracks packet-observed high scores for skillchain damage and magic
 burst damage while the addon is loaded.
 
+![SCP window](images/scp.png)
+
 ## Installation
 
 Download the latest ZIP file from the

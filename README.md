@@ -14,9 +14,7 @@ The default ruleset is **Horizon**; a **Retail (CoP)** ruleset is also selectabl
 SCP also tracks packet-observed high scores for skillchain damage and magic
 burst damage while the addon is loaded.
 
----
-
-## Install
+## Installation
 
 Download the latest ZIP file from the
 [SCP Releases page](https://github.com/AnnaNomoly/scp/releases/latest), then
@@ -55,41 +53,40 @@ Then in‑game:
 To load it automatically, add `/addon load scp` to your Ashita
 startup script.
 
----
-
-## Using it
+## Usage
 
 Open/close the window:
 
 ```
-/scplanner        (or /scp)
+/scp
+/scplanner
 ```
 
 **Top controls**
-- **Ruleset** — Horizon (default) or Retail (CoP). Changes which weaponskill
+- **Ruleset**: Horizon (default) or Retail (CoP). Changes which weaponskill
   properties are used. (See *Rulesets* below.)
-- **Max steps** — how many weaponskills deep to search (2–5). Default 3, which
+- **Max steps**: how many weaponskills deep to search (2-5). Default 3, which
   is enough to reach Light/Darkness. Higher values find longer chains but search
   more combinations.
-- **Party Sync** — fills the six party slots from your current party once,
+- **Party Sync**: fills the six party slots from your current party once,
   using current party job, level, and name. Weapons are reset to the planner's
   preferred weapon for each job.
-- **Lv filter** — show all chains, only Lv.2+, or only Lv.3 (Light/Darkness).
-- **One WS per member** — if on, each member contributes at most one weaponskill
+- **Lv filter**: show all chains, only Lv.2+, or only Lv.3 (Light/Darkness).
+- **One WS per member**: if on, each member contributes at most one weaponskill
   per chain (realistic for a coordinated party burst). If off, a member may
   appear more than once (e.g. a SAM self‑skillchaining).
-- **Color** — toggle property/element coloring.
+- **Color**: toggle property/element coloring.
 
 **Party** (6 slots)
 - Enable the checkbox to include a member.
-- Pick **job**, **level** (1–75), and **weapon**. The weapon list only shows
+- Pick **job**, **level** (1-75), and **weapon**. The weapon list only shows
   weapons that job can use.
 - Expand **Weaponskills** to choose which WS that member has. This is the
   *hybrid* model:
   - **Auto** checks the WS the job is expected to have at that level/skill.
   - **All** / **None** select everything / nothing.
   - Individual checkboxes let you fine‑tune.
-  - **Relic: …** includes the weapon's Relic weaponskill (off by default, since
+  - **Relic: ...** includes the weapon's Relic weaponskill (off by default, since
     it requires that relic). Changing job or weapon re‑runs Auto.
 
 **Results** are listed best‑first. Each row shows the resulting skillchain, its
@@ -105,37 +102,34 @@ to clear the saved records.
 Other commands:
 
 ```
-/scp show | hide
-/scp horizon | retail
-/scp sync
-/scp steps <2-5>
-/scp scores [reset]
+/scp show | hide      # Sets visibility
+/scp horizon | retail # Sets ruleset
+/scp sync             # Toggles party sync
+/scp steps <2-5>      # Sets step filters
+/scp scores           # Prints records to chat window
+/scp scores reset     # Resets recorded scores
 /scp reset            # restore the default party
 ```
 
 Your party and settings are saved automatically (per character).
 
----
-
 ## How ranking works
 
-You asked for ranking **purely by skillchain tier**:
+Ranking is done **purely by skillchain tier**:
 
-1. **Lv.3** — Light, Darkness
-2. **Lv.2** — Fusion, Fragmentation, Distortion, Gravitation
-3. **Lv.1** — Transfixion, Compression, Liquefaction, Scission, Reverberation,
+1. **Lv.3**: Light, Darkness
+2. **Lv.2**: Fusion, Fragmentation, Distortion, Gravitation
+3. **Lv.1**: Transfixion, Compression, Liquefaction, Scission, Reverberation,
    Induration, Impaction, Detonation
 
 Ties are broken by fewest steps, then by name. The burst elements and closing
 weaponskill are shown for every result, but they do **not** affect the ranking.
 
 A search branch stops as soon as it reaches a Lv.3 (Light/Darkness) result, which
-matches the level‑75 era — there is no Aeonic Radiance/Umbra and no
+matches the level‑75 era: there is no Aeonic Radiance/Umbra and no
 double‑Light/Darkness continuation.
 
----
-
-## Rulesets (important)
+## Rulesets
 
 The properties shipped here come from the `chains` addon's `skills.lua`, which is
 **Horizon‑flavored** (for example it overrides *Catastrophe* from the retail
@@ -150,50 +144,20 @@ extend it, add `retail = { ... }` overrides to the relevant weaponskills in
 `ws_data.lua` (there's a comment marking the spot). Any WS without a `retail`
 override simply uses the Horizon properties.
 
----
-
-## Accuracy caveats (please read)
-
-This addon was written **without the ability to run it in‑game or against the
-FFXI client**, and without wiki access. Two areas are best‑effort and are
-the first things to verify:
-
-1. **Skill data in `jobs.lua` and `ws_data.lua`** — the job × weapon skill‑grade
-   matrix, the level‑75 skill caps, and the per‑WS skill requirements are
-   approximate. They only drive the **Auto** suggestion of which weaponskills a
-   member has. Because every WS has a manual checkbox (and **All**/**None**),
-   wrong values here are never fatal — they just change the starting checkboxes.
-   At level 75 on a main weapon, everything is available anyway. The sub‑75 skill
-   curve in particular is a crude proxy; verify if you plan around lower levels.
-   Sub‑job is **not** factored in (main‑job only), by design for v1.
-
-2. **ImGui binding details** — the planner uses standard Ashita v4 ImGui widgets
-   (combos, checkboxes, sliders, child windows, collapsing headers). If a widget
-   call errors on your Ashita build, that's the place to look; the data and the
-   skillchain engine are independent of the UI.
-
-The **skillchain rules and weaponskill properties themselves** are ported
-directly from the reference addon and validated against the canonical resonance
-table, so the chains it reports are correct for the chosen ruleset.
-
----
-
 ## File overview
 
-- **`sc_data.lua`** — skillchain formation table (`chainInfo`), tiers, burst
+- **`sc_data.lua`**: skillchain formation table (`chainInfo`), tiers, burst
   elements, colors. Ported from the `chains` addon.
-- **`ws_data.lua`** — through‑CoP weaponskills by weapon type, with Horizon
+- **`ws_data.lua`**: through‑CoP weaponskills by weapon type, with Horizon
   properties, optional retail overrides, relic flags, and skill thresholds.
-- **`jobs.lua`** — the 15 through‑CoP jobs, the weapon skill‑grade matrix, the
+- **`jobs.lua`**: the 15 through‑CoP jobs, the weapon skill‑grade matrix, the
   level‑75 skill caps, and the WS‑availability helper.
-- **`engine.lua`** — skillchain enumeration + tier ranking (pure logic).
-- **`high_scores.lua`** - inbound 0x28 action packet parser and skillchain /
+- **`engine.lua`**: skillchain enumeration + tier ranking (pure logic).
+- **`high_scores.lua`**: inbound 0x28 action packet parser and skillchain /
   magic burst high score tracker.
-- **`LICENSE`** - SCP license notice.
-- **`NOTICE.md`** - upstream attribution and third-party notices.
-- **`scp.lua`** — the addon: UI, settings, commands, render loop.
-
----
+- **`LICENSE`**: SCP license notice.
+- **`NOTICE.md`**: upstream attribution and third-party notices.
+- **`scp.lua`**: the addon: UI, settings, commands, render loop.
 
 ## License
 
@@ -208,8 +172,6 @@ are ported from Ivaar's `skills.lua` data used by `chains`; its BSD-style notice
 is preserved in `NOTICE.md`.
 
 See `LICENSE` and `NOTICE.md` for the redistribution notices.
-
----
 
 ## Credits
 
